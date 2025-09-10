@@ -1,4 +1,4 @@
-# AI Sign Language API
+# AI Sign Language API (In Process)
 
 A minimal FastAPI-based API for AI-powered sign language detection and recognition.
 
