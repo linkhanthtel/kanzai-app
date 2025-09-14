@@ -56,7 +56,7 @@ def analyze_hand_for_sign(hand: Dict[str, Any]) -> Dict[str, Any]:
 
 def analyze_landmarks(landmarks: List[Dict[str, float]]) -> Dict[str, Any]:
     """
-    Analyze MediaPipe hand landmarks to determine sign
+    Analyze MediaPipe hand landmarks to determine sign with enhanced finger detection
     
     Args:
         landmarks: List of 21 hand landmark points
@@ -71,17 +71,210 @@ def analyze_landmarks(landmarks: List[Dict[str, float]]) -> Dict[str, Any]:
     # Convert landmarks to numpy array for easier processing
     points = np.array([[lm["x"], lm["y"], lm["z"]] for lm in landmarks])
     
-    # Analyze finger positions
-    finger_analysis = analyze_finger_positions(points)
+    # Enhanced finger analysis with detailed detection
+    finger_analysis = analyze_finger_positions_enhanced(points)
     
-    # Determine sign based on finger analysis
-    predicted_letter = determine_sign_from_fingers(finger_analysis)
+    # Determine sign based on enhanced finger analysis
+    predicted_letter = determine_sign_from_fingers_enhanced(finger_analysis)
     
     return {
         "letter": predicted_letter,
         "confidence": finger_analysis["confidence"],
-        "description": SIGN_MAPPING.get(predicted_letter, "Unknown sign")
+        "description": SIGN_MAPPING.get(predicted_letter, "Unknown sign"),
+        "finger_details": finger_analysis["finger_details"]
     }
+
+def analyze_finger_positions_enhanced(points: np.ndarray) -> Dict[str, Any]:
+    """
+    Enhanced finger position analysis with detailed finger detection
+    
+    Args:
+        points: Array of 21 landmark points
+        
+    Returns:
+        Dictionary with enhanced finger analysis results
+    """
+    
+    # MediaPipe hand landmark indices
+    # Thumb: 0-4, Index: 5-8, Middle: 9-12, Ring: 13-16, Pinky: 17-20
+    thumb_tip = points[4]
+    index_tip = points[8]
+    middle_tip = points[12]
+    ring_tip = points[16]
+    pinky_tip = points[20]
+    
+    # Wrist reference point
+    wrist = points[0]
+    
+    # Enhanced finger extension detection
+    thumb_analysis = analyze_finger_extension(points[0], points[1], points[2], points[3], points[4])
+    index_analysis = analyze_finger_extension(points[5], points[6], points[7], points[8])
+    middle_analysis = analyze_finger_extension(points[9], points[10], points[11], points[12])
+    ring_analysis = analyze_finger_extension(points[13], points[14], points[15], points[16])
+    pinky_analysis = analyze_finger_extension(points[17], points[18], points[19], points[20])
+    
+    # Calculate overall confidence
+    confidence = calculate_enhanced_confidence(points, [thumb_analysis, index_analysis, middle_analysis, ring_analysis, pinky_analysis])
+    
+    # Detailed finger information
+    finger_details = {
+        "thumb": {
+            "extended": thumb_analysis["extended"],
+            "angle": thumb_analysis["angle"],
+            "confidence": thumb_analysis["confidence"]
+        },
+        "index": {
+            "extended": index_analysis["extended"],
+            "angle": index_analysis["angle"],
+            "confidence": index_analysis["confidence"]
+        },
+        "middle": {
+            "extended": middle_analysis["extended"],
+            "angle": middle_analysis["angle"],
+            "confidence": middle_analysis["confidence"]
+        },
+        "ring": {
+            "extended": ring_analysis["extended"],
+            "angle": ring_analysis["angle"],
+            "confidence": ring_analysis["confidence"]
+        },
+        "pinky": {
+            "extended": pinky_analysis["extended"],
+            "angle": pinky_analysis["angle"],
+            "confidence": pinky_analysis["confidence"]
+        }
+    }
+    
+    return {
+        "thumb": thumb_analysis["extended"],
+        "index": index_analysis["extended"],
+        "middle": middle_analysis["extended"],
+        "ring": ring_analysis["extended"],
+        "pinky": pinky_analysis["extended"],
+        "confidence": confidence,
+        "finger_details": finger_details
+    }
+
+def analyze_finger_extension(*finger_points):
+    """Enhanced finger extension analysis with angle calculation"""
+    if len(finger_points) < 3:
+        return {"extended": False, "angle": 0, "confidence": 0.0}
+    
+    # Calculate vectors between finger segments
+    vectors = []
+    for i in range(len(finger_points) - 1):
+        vectors.append(finger_points[i+1] - finger_points[i])
+    
+    if len(vectors) < 2:
+        return {"extended": False, "angle": 0, "confidence": 0.0}
+    
+    # Calculate angle between first two segments
+    v1, v2 = vectors[0], vectors[1]
+    v1_norm = np.linalg.norm(v1)
+    v2_norm = np.linalg.norm(v2)
+    
+    if v1_norm == 0 or v2_norm == 0:
+        return {"extended": False, "angle": 0, "confidence": 0.0}
+    
+    cos_angle = np.dot(v1, v2) / (v1_norm * v2_norm)
+    cos_angle = np.clip(cos_angle, -1.0, 1.0)
+    angle = np.arccos(cos_angle)
+    
+    # Determine if finger is extended (angle close to 180 degrees)
+    extended = angle > 2.0  # Approximately 115 degrees
+    
+    # Calculate confidence based on angle and vector lengths
+    angle_confidence = min(angle / np.pi, 1.0)  # Normalize to 0-1
+    length_confidence = min((v1_norm + v2_norm) / 2, 1.0)  # Normalize based on finger length
+    confidence = (angle_confidence + length_confidence) / 2
+    
+    return {
+        "extended": extended,
+        "angle": float(angle),
+        "confidence": float(confidence)
+    }
+
+def calculate_enhanced_confidence(points: np.ndarray, finger_analyses: List[Dict]) -> float:
+    """Calculate enhanced confidence based on finger analysis quality"""
+    if len(finger_analyses) == 0:
+        return 0.0
+    
+    # Base confidence from landmark spread
+    x_range = np.max(points[:, 0]) - np.min(points[:, 0])
+    y_range = np.max(points[:, 1]) - np.min(points[:, 1])
+    spread_confidence = min(np.sqrt(x_range**2 + y_range**2) * 10, 1.0)
+    
+    # Finger analysis confidence
+    finger_confidences = [fa["confidence"] for fa in finger_analyses]
+    avg_finger_confidence = np.mean(finger_confidences) if finger_confidences else 0.0
+    
+    # Combine confidences
+    total_confidence = (spread_confidence + avg_finger_confidence) / 2
+    return float(total_confidence)
+
+def determine_sign_from_fingers_enhanced(finger_analysis: Dict[str, Any]) -> str:
+    """
+    Enhanced sign determination with detailed finger analysis
+    
+    Args:
+        finger_analysis: Dictionary with finger positions and details
+        
+    Returns:
+        Predicted sign language letter
+    """
+    
+    thumb = finger_analysis["thumb"]
+    index = finger_analysis["index"]
+    middle = finger_analysis["middle"]
+    ring = finger_analysis["ring"]
+    pinky = finger_analysis["pinky"]
+    
+    # Get finger details for more precise analysis
+    finger_details = finger_analysis.get("finger_details", {})
+    
+    # Enhanced sign language letter determination
+    if not thumb and not index and not middle and not ring and not pinky:
+        return "E"  # Fist - all fingers closed
+    elif thumb and not index and not middle and not ring and not pinky:
+        return "A"  # Thumb up only
+    elif not thumb and index and not middle and not ring and not pinky:
+        return "D"  # Index finger only
+    elif not thumb and index and middle and not ring and not pinky:
+        return "V"  # V sign (index and middle)
+    elif not thumb and index and middle and ring and not pinky:
+        return "W"  # Three fingers (index, middle, ring)
+    elif not thumb and not index and not middle and not ring and pinky:
+        return "I"  # Pinky only
+    elif thumb and not index and not middle and not ring and pinky:
+        return "Y"  # Thumb and pinky
+    elif not thumb and index and middle and ring and pinky:
+        return "B"  # All fingers except thumb
+    elif thumb and index and not middle and not ring and not pinky:
+        return "L"  # L shape (thumb and index)
+    elif thumb and index and middle and not ring and not pinky:
+        return "K"  # K shape (thumb, index, middle)
+    elif thumb and not index and not middle and not ring and not pinky:
+        # Check thumb angle for more precise detection
+        thumb_details = finger_details.get("thumb", {})
+        if thumb_details.get("angle", 0) > 2.5:
+            return "A"  # Thumb up
+        else:
+            return "S"  # Thumb in fist
+    elif index and middle and not ring and not pinky and not thumb:
+        return "V"  # V sign
+    elif index and middle and ring and not pinky and not thumb:
+        return "W"  # Three fingers
+    elif index and middle and ring and pinky and not thumb:
+        return "B"  # All fingers
+    else:
+        # Default based on confidence
+        confidence = finger_analysis.get("confidence", 0.0)
+        if confidence > 0.7:
+            return "A"  # High confidence default
+        elif confidence > 0.4:
+            return "?"  # Medium confidence - unclear
+        else:
+            return "?"  # Low confidence - unclear
 
 def analyze_finger_positions(points: np.ndarray) -> Dict[str, Any]:
     """
