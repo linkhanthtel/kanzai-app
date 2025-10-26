@@ -202,51 +202,88 @@ const LiveSignDetection = () => {
     <div style={{ 
       maxWidth: '800px', 
       margin: '0 auto', 
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif'
+      padding: '40px 20px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>
-        Live Sign Language Detection
+      <h1 style={{ 
+        textAlign: 'center', 
+        color: '#ffffff',
+        fontSize: '2rem',
+        fontWeight: '600',
+        marginBottom: '8px',
+        letterSpacing: '-0.5px'
+      }}>
+        Live Sign Detection
       </h1>
+      <p style={{
+        textAlign: 'center',
+        color: '#bdc3c7',
+        fontSize: '1rem',
+        marginBottom: '40px',
+        fontWeight: '400'
+      }}>
+        Real-time finger detection and sign language recognition
+      </p>
       
       {/* Status indicators */}
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-between', 
-        marginBottom: '20px',
+        justifyContent: 'center', 
+        marginBottom: '40px',
         flexWrap: 'wrap',
-        gap: '10px'
+        gap: '20px'
       }}>
         <div style={{ 
-          padding: '8px 16px', 
-          borderRadius: '20px',
-          backgroundColor: isConnected ? '#4CAF50' : '#f44336',
-          color: 'white',
-          fontSize: '14px'
+          padding: '12px 20px', 
+          borderRadius: '6px',
+          backgroundColor: isConnected ? '#27ae60' : '#e74c3c',
+          color: '#ffffff',
+          fontSize: '14px',
+          fontWeight: '500',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
         }}>
-          Server: {isConnected ? 'Connected' : 'Disconnected'}
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#ffffff'
+          }} />
+          {isConnected ? 'Connected' : 'Disconnected'}
         </div>
         
         <div style={{ 
-          padding: '8px 16px', 
-          borderRadius: '20px',
-          backgroundColor: isDetecting ? '#2196F3' : '#9E9E9E',
-          color: 'white',
-          fontSize: '14px'
+          padding: '12px 20px', 
+          borderRadius: '6px',
+          backgroundColor: isDetecting ? '#3498db' : '#95a5a6',
+          color: '#ffffff',
+          fontSize: '14px',
+          fontWeight: '500',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
         }}>
-          Detection: {isDetecting ? 'Active' : 'Inactive'}
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#ffffff'
+          }} />
+          {isDetecting ? 'Detecting' : 'Inactive'}
         </div>
       </div>
 
       {/* Error message */}
       {error && (
         <div style={{
-          backgroundColor: '#ffebee',
-          color: '#c62828',
-          padding: '12px',
-          borderRadius: '4px',
+          backgroundColor: '#e74c3c',
+          border: '1px solid #c0392b',
+          borderRadius: '6px',
+          padding: '16px',
           marginBottom: '20px',
-          border: '1px solid #ef5350'
+          color: '#ffffff',
+          fontSize: '14px'
         }}>
           {error}
         </div>
@@ -255,10 +292,11 @@ const LiveSignDetection = () => {
       {/* Video and canvas */}
       <div style={{ 
         position: 'relative', 
-        marginBottom: '20px',
+        marginBottom: '40px',
         borderRadius: '8px',
         overflow: 'hidden',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+        backgroundColor: '#2c3e50',
+        border: '1px solid #34495e'
       }}>
         <video
           ref={videoRef}
@@ -268,22 +306,29 @@ const LiveSignDetection = () => {
           style={{
             width: '100%',
             height: 'auto',
-            display: isDetecting ? 'block' : 'none'
+            display: isDetecting ? 'block' : 'none',
+            borderRadius: '8px'
           }}
         />
         
         {!isDetecting && (
           <div style={{
             width: '100%',
-            height: '300px',
-            backgroundColor: '#f5f5f5',
+            height: '400px',
+            backgroundColor: '#2c3e50',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#666',
-            fontSize: '18px'
+            color: '#bdc3c7',
+            fontSize: '16px',
+            textAlign: 'center'
           }}>
-            Click "Start Detection" to begin
+            <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}>📹</div>
+            <div style={{ marginBottom: '8px', fontWeight: '500' }}>Camera Ready</div>
+            <div style={{ fontSize: '14px', opacity: 0.7 }}>
+              Click "Start Detection" to begin
+            </div>
           </div>
         )}
         
@@ -297,8 +342,8 @@ const LiveSignDetection = () => {
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
-        gap: '10px',
-        marginBottom: '20px'
+        gap: '16px',
+        marginBottom: '40px'
       }}>
         <button
           onClick={startDetection}
@@ -306,11 +351,23 @@ const LiveSignDetection = () => {
           style={{
             padding: '12px 24px',
             fontSize: '16px',
-            backgroundColor: isDetecting ? '#ccc' : '#4CAF50',
-            color: 'white',
+            fontWeight: '500',
+            backgroundColor: isDetecting ? '#95a5a6' : '#3498db',
+            color: '#ffffff',
             border: 'none',
-            borderRadius: '4px',
-            cursor: isDetecting ? 'not-allowed' : 'pointer'
+            borderRadius: '6px',
+            cursor: isDetecting ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            if (!isDetecting) {
+              e.target.style.backgroundColor = '#2980b9';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!isDetecting) {
+              e.target.style.backgroundColor = '#3498db';
+            }
           }}
         >
           {isDetecting ? 'Detecting...' : 'Start Detection'}
@@ -322,11 +379,23 @@ const LiveSignDetection = () => {
           style={{
             padding: '12px 24px',
             fontSize: '16px',
-            backgroundColor: !isDetecting ? '#ccc' : '#f44336',
-            color: 'white',
+            fontWeight: '500',
+            backgroundColor: !isDetecting ? '#95a5a6' : '#e74c3c',
+            color: '#ffffff',
             border: 'none',
-            borderRadius: '4px',
-            cursor: !isDetecting ? 'not-allowed' : 'pointer'
+            borderRadius: '6px',
+            cursor: !isDetecting ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            if (isDetecting) {
+              e.target.style.backgroundColor = '#c0392b';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (isDetecting) {
+              e.target.style.backgroundColor = '#e74c3c';
+            }
           }}
         >
           Stop Detection
@@ -336,37 +405,38 @@ const LiveSignDetection = () => {
       {/* Current detected sign */}
       {currentSign && (
         <div style={{
-          backgroundColor: '#e8f5e8',
-          border: '2px solid #4CAF50',
+          backgroundColor: '#2c3e50',
+          border: '1px solid #34495e',
           borderRadius: '8px',
-          padding: '30px',
-          marginBottom: '20px',
-          textAlign: 'center',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+          padding: '40px',
+          marginBottom: '40px',
+          textAlign: 'center'
         }}>
           <div style={{
-            fontSize: '72px',
-            fontWeight: 'bold',
-            color: '#2E7D32',
-            marginBottom: '15px',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+            fontSize: '80px',
+            fontWeight: '700',
+            color: '#3498db',
+            marginBottom: '16px'
           }}>
             {currentSign.letter}
           </div>
+          
           <p style={{ 
-            margin: '0 0 15px 0', 
-            color: '#388E3C',
+            margin: '0 0 20px 0', 
+            color: '#bdc3c7',
             fontSize: '18px',
-            fontWeight: '500'
+            fontWeight: '400',
+            lineHeight: '1.5'
           }}>
             {currentSign.description}
           </p>
+          
           <div style={{
             fontSize: '14px',
-            color: '#666',
-            backgroundColor: 'rgba(255,255,255,0.7)',
+            color: '#95a5a6',
+            backgroundColor: '#34495e',
             padding: '8px 16px',
-            borderRadius: '20px',
+            borderRadius: '4px',
             display: 'inline-block'
           }}>
             Confidence: {(currentSign.confidence * 100).toFixed(0)}% • Method: {currentSign.method}
@@ -377,50 +447,62 @@ const LiveSignDetection = () => {
       {/* Recent detected signs */}
       {detectedLetters.length > 0 && (
         <div style={{
-          backgroundColor: '#f8f9fa',
-          border: '1px solid #dee2e6',
+          backgroundColor: '#2c3e50',
+          border: '1px solid #34495e',
           borderRadius: '8px',
-          padding: '20px'
+          padding: '24px',
+          marginBottom: '40px'
         }}>
-          <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>
-            Recent Signs Detected
+          <h3 style={{ 
+            margin: '0 0 20px 0', 
+            color: '#ffffff',
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            textAlign: 'center'
+          }}>
+            Recent Signs
           </h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             {detectedLetters.map((sign, index) => (
               <div
                 key={index}
                 style={{
-                  backgroundColor: 'white',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '12px',
-                  padding: '15px 20px',
+                  backgroundColor: '#34495e',
+                  border: '1px solid #4a5f7a',
+                  borderRadius: '6px',
+                  padding: '16px 20px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  minWidth: '100px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  minWidth: '80px',
                   transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.backgroundColor = '#4a5f7a';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.backgroundColor = '#34495e';
                 }}
               >
                 <div style={{
-                  fontSize: '32px',
-                  fontWeight: 'bold',
-                  color: '#2196F3',
+                  fontSize: '24px',
+                  fontWeight: '600',
+                  color: '#3498db',
                   marginBottom: '8px'
                 }}>
                   {sign.letter}
                 </div>
                 <div style={{
                   fontSize: '11px',
-                  color: '#666',
+                  color: '#bdc3c7',
                   textAlign: 'center',
-                  marginBottom: '5px'
+                  marginBottom: '4px'
                 }}>
-                  {(sign.confidence * 100).toFixed(0)}% confidence
+                  {(sign.confidence * 100).toFixed(0)}%
                 </div>
                 <div style={{
                   fontSize: '10px',
-                  color: '#999',
+                  color: '#95a5a6',
                   textAlign: 'center'
                 }}>
                   {sign.method}
@@ -433,23 +515,75 @@ const LiveSignDetection = () => {
 
       {/* Instructions */}
       <div style={{
-        backgroundColor: '#e3f2fd',
-        border: '1px solid #2196F3',
+        backgroundColor: '#2c3e50',
+        border: '1px solid #34495e',
         borderRadius: '8px',
-        padding: '20px',
-        marginTop: '20px'
+        padding: '24px',
+        marginTop: '40px'
       }}>
-        <h3 style={{ margin: '0 0 10px 0', color: '#1976D2' }}>
-          How to Use Live Sign Detection
+        <h3 style={{ 
+          margin: '0 0 20px 0', 
+          color: '#ffffff',
+          fontSize: '1.25rem',
+          fontWeight: '600',
+          textAlign: 'center'
+        }}>
+          How to Use
         </h3>
-        <ul style={{ margin: '0', paddingLeft: '20px', color: '#424242' }}>
-          <li><strong>Good Lighting:</strong> Ensure your hand is well-lit and visible</li>
-          <li><strong>Clear Position:</strong> Position your hand clearly in front of the camera</li>
-          <li><strong>Steady Movement:</strong> Hold signs steady for better recognition</li>
-          <li><strong>Try Different Signs:</strong> Practice different sign language letters</li>
-          <li><strong>Clean Background:</strong> Use a plain background for better detection</li>
-          <li><strong>Single Hand:</strong> Start with one hand for clearer results</li>
-        </ul>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '16px',
+          color: '#bdc3c7'
+        }}>
+          <div style={{
+            backgroundColor: '#34495e',
+            border: '1px solid #4a5f7a',
+            borderRadius: '6px',
+            padding: '16px'
+          }}>
+            <h4 style={{ color: '#3498db', margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>Good Lighting</h4>
+            <p style={{ margin: '0', fontSize: '13px', lineHeight: '1.4' }}>
+              Ensure your hand is well-lit and visible. Avoid shadows and direct light sources.
+            </p>
+          </div>
+          
+          <div style={{
+            backgroundColor: '#34495e',
+            border: '1px solid #4a5f7a',
+            borderRadius: '6px',
+            padding: '16px'
+          }}>
+            <h4 style={{ color: '#3498db', margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>Clear Position</h4>
+            <p style={{ margin: '0', fontSize: '13px', lineHeight: '1.4' }}>
+              Position your hand clearly in front of the camera. Maintain steady position for better detection.
+            </p>
+          </div>
+          
+          <div style={{
+            backgroundColor: '#34495e',
+            border: '1px solid #4a5f7a',
+            borderRadius: '6px',
+            padding: '16px'
+          }}>
+            <h4 style={{ color: '#3498db', margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>Steady Movement</h4>
+            <p style={{ margin: '0', fontSize: '13px', lineHeight: '1.4' }}>
+              Hold signs steady for better recognition. Avoid rapid movements during detection.
+            </p>
+          </div>
+          
+          <div style={{
+            backgroundColor: '#34495e',
+            border: '1px solid #4a5f7a',
+            borderRadius: '6px',
+            padding: '16px'
+          }}>
+            <h4 style={{ color: '#3498db', margin: '0 0 8px 0', fontSize: '14px', fontWeight: '600' }}>Clean Background</h4>
+            <p style={{ margin: '0', fontSize: '13px', lineHeight: '1.4' }}>
+              Use a plain background for better detection. Start with one hand for clearer results.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

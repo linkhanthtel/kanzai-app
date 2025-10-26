@@ -1,79 +1,99 @@
-# AI Sign Language API (In Process)
+# AI Sign Language Recognition System
 
-A minimal FastAPI-based API for AI-powered sign language detection and recognition.
+A full-stack application for real-time sign language detection and learning, built with FastAPI (backend) and React (frontend).
 
 ## Features
 
-- **Hand Detection**: Uses MediaPipe for hand landmark detection
-- **Sign Language Support**: Basic American Sign Language alphabet mapping
-- **Image Processing**: Accepts image uploads for sign detection
-- **RESTful API**: Clean endpoints for React frontend integration
-- **CORS Enabled**: Ready for web application integration
+- **Real-time Detection**: Live webcam-based sign language detection using MediaPipe
+- **Image Upload**: Upload images for sign language analysis
+- **Learning Mode**: Interactive sign language learning with descriptions
+- **WebSocket Support**: Real-time communication between frontend and backend
+- **Hand Landmark Detection**: Advanced hand tracking and landmark detection
 
-## API Endpoints
+## Project Structure
 
-- `GET /` - Root endpoint with API status
-- `GET /health` - Health check endpoint
-- `POST /detect-sign` - Upload image for sign detection
-- `GET /signs` - Get list of available signs
-- `GET /sign/{letter}` - Get specific sign information
+```
+kanzai-app/
+├── backend/
+│   ├── main.py              # FastAPI server
+│   └── requirements.txt     # Python dependencies
+├── frontend/
+│   ├── public/
+│   │   └── index.html       # HTML template
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── LiveSignDetection.js
+│   │   ├── App.js           # Main React component
+│   │   └── index.js         # React entry point
+│   └── package.json         # Node.js dependencies
+└── README.md
+```
 
-## Setup
+## Backend Setup
 
-1. **Install dependencies**:
+1. **Install Python dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Run the server**:
+2. **Run the FastAPI server:**
    ```bash
    python main.py
    ```
-   
-   Or using uvicorn directly:
+
+   The API will be available at `http://localhost:8000`
+
+## Frontend Setup
+
+1. **Install Node.js dependencies:**
    ```bash
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   npm install
    ```
 
-3. **Access the API**:
-   - API: http://localhost:8000
-   - Interactive docs: http://localhost:8000/docs
-   - Alternative docs: http://localhost:8000/redoc
+2. **Start the React development server:**
+   ```bash
+   npm start
+   ```
 
-## Usage Examples
+   The frontend will be available at `http://localhost:3000`
 
-### Test the API
-```bash
-# Health check
-curl http://localhost:8000/health
+## API Endpoints
 
-# Get available signs
-curl http://localhost:8000/signs
+- `GET /` - API status
+- `GET /health` - Health check
+- `GET /signs` - Get available sign language mappings
+- `GET /sign/{letter}` - Get specific sign information
+- `POST /detect-sign` - Detect sign language from uploaded image
+- `WS /ws/live-detect` - WebSocket for real-time detection
 
-# Get specific sign info
-curl http://localhost:8000/sign/A
-```
+## Technologies Used
 
-### For React Integration
-The API is configured with CORS to work with React applications. You can:
-- Upload images using the `/detect-sign` endpoint
-- Fetch sign information for display
-- Build a complete sign language learning application
+### Backend
+- **FastAPI**: Modern, fast web framework for building APIs
+- **MediaPipe**: Google's framework for building perception pipelines
+- **OpenCV**: Computer vision library
+- **WebSocket**: Real-time communication
 
-## Future Improvements
+### Frontend
+- **React**: JavaScript library for building user interfaces
+- **WebSocket**: Real-time communication with backend
+- **Canvas API**: For image processing and webcam capture
 
-- Advanced sign recognition using machine learning
-- Real-time video processing
-- Support for more sign languages
-- Gesture sequence recognition
-- User authentication and progress tracking
+## Usage
 
-## Dependencies
+1. Start both the backend and frontend servers
+2. Open the React app in your browser
+3. Use the "Live Detection" tab for real-time sign language detection
+4. Use the "Upload Image" tab to analyze uploaded images
+5. Use the "Learn Signs" tab to explore sign language alphabet
 
-- FastAPI - Modern web framework
-- MediaPipe - Hand tracking and pose estimation
-- OpenCV - Image processing
-- NumPy - Numerical computing
-- PIL - Image handling
-- Uvicorn - ASGI server
+## Requirements
 
+- Python 3.8+
+- Node.js 16+
+- Modern web browser with camera support
+- Good lighting for optimal hand detection
+
+## Development
+
+The project is structured with separate backend and frontend directories for easy development and deployment. The backend provides a REST API and WebSocket endpoints, while the frontend consumes these services to provide a rich user interface.

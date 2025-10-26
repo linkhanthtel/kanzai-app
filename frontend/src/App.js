@@ -60,31 +60,42 @@ const App = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#f5f5f5',
-      fontFamily: 'Arial, sans-serif'
+      backgroundColor: '#1a1a2e',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      color: '#ffffff'
     }}>
       {/* Header */}
       <header style={{
-        backgroundColor: '#2196F3',
-        color: 'white',
-        padding: '20px 0',
+        backgroundColor: '#16213e',
+        color: '#ffffff',
+        padding: '40px 0',
         textAlign: 'center',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        borderBottom: '1px solid #2c3e50'
       }}>
-        <h1 style={{ margin: '0', fontSize: '2.5rem' }}>
+        <h1 style={{ 
+          margin: '0', 
+          fontSize: '2.5rem',
+          fontWeight: '600',
+          color: '#ffffff',
+          letterSpacing: '-0.5px'
+        }}>
           AI Sign Language Recognition
         </h1>
-        <p style={{ margin: '10px 0 0 0', fontSize: '1.1rem', opacity: 0.9 }}>
-          Real-time sign language detection and learning
+        <p style={{ 
+          margin: '10px 0 0 0', 
+          fontSize: '1.1rem', 
+          color: '#bdc3c7',
+          fontWeight: '400'
+        }}>
+          Real-time finger detection and sign language analysis
         </p>
       </header>
 
       {/* Navigation */}
       <nav style={{
-        backgroundColor: 'white',
+        backgroundColor: '#16213e',
         padding: '0',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginBottom: '20px'
+        borderBottom: '1px solid #2c3e50'
       }}>
         <div style={{
           display: 'flex',
@@ -95,14 +106,27 @@ const App = () => {
           <button
             onClick={() => setActiveTab('live')}
             style={{
-              padding: '15px 30px',
+              padding: '16px 24px',
               border: 'none',
-              backgroundColor: activeTab === 'live' ? '#2196F3' : 'transparent',
-              color: activeTab === 'live' ? 'white' : '#666',
+              backgroundColor: activeTab === 'live' ? '#3498db' : 'transparent',
+              color: activeTab === 'live' ? '#ffffff' : '#bdc3c7',
               cursor: 'pointer',
               fontSize: '16px',
               fontWeight: '500',
-              borderBottom: activeTab === 'live' ? '3px solid #1976D2' : '3px solid transparent'
+              transition: 'all 0.2s ease',
+              borderBottom: activeTab === 'live' ? '3px solid #3498db' : '3px solid transparent'
+            }}
+            onMouseOver={(e) => {
+              if (activeTab !== 'live') {
+                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+                e.target.style.color = '#ffffff';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (activeTab !== 'live') {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#bdc3c7';
+              }
             }}
           >
             Live Detection
@@ -110,14 +134,27 @@ const App = () => {
           <button
             onClick={() => setActiveTab('upload')}
             style={{
-              padding: '15px 30px',
+              padding: '16px 24px',
               border: 'none',
-              backgroundColor: activeTab === 'upload' ? '#2196F3' : 'transparent',
-              color: activeTab === 'upload' ? 'white' : '#666',
+              backgroundColor: activeTab === 'upload' ? '#3498db' : 'transparent',
+              color: activeTab === 'upload' ? '#ffffff' : '#bdc3c7',
               cursor: 'pointer',
               fontSize: '16px',
               fontWeight: '500',
-              borderBottom: activeTab === 'upload' ? '3px solid #1976D2' : '3px solid transparent'
+              transition: 'all 0.2s ease',
+              borderBottom: activeTab === 'upload' ? '3px solid #3498db' : '3px solid transparent'
+            }}
+            onMouseOver={(e) => {
+              if (activeTab !== 'upload') {
+                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+                e.target.style.color = '#ffffff';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (activeTab !== 'upload') {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#bdc3c7';
+              }
             }}
           >
             Upload Image
@@ -125,14 +162,27 @@ const App = () => {
           <button
             onClick={() => setActiveTab('learn')}
             style={{
-              padding: '15px 30px',
+              padding: '16px 24px',
               border: 'none',
-              backgroundColor: activeTab === 'learn' ? '#2196F3' : 'transparent',
-              color: activeTab === 'learn' ? 'white' : '#666',
+              backgroundColor: activeTab === 'learn' ? '#3498db' : 'transparent',
+              color: activeTab === 'learn' ? '#ffffff' : '#bdc3c7',
               cursor: 'pointer',
               fontSize: '16px',
               fontWeight: '500',
-              borderBottom: activeTab === 'learn' ? '3px solid #1976D2' : '3px solid transparent'
+              transition: 'all 0.2s ease',
+              borderBottom: activeTab === 'learn' ? '3px solid #3498db' : '3px solid transparent'
+            }}
+            onMouseOver={(e) => {
+              if (activeTab !== 'learn') {
+                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+                e.target.style.color = '#ffffff';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (activeTab !== 'learn') {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#bdc3c7';
+              }
             }}
           >
             Learn Signs
