@@ -324,7 +324,6 @@ const LiveSignDetection = () => {
             fontSize: '16px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px', opacity: 0.5 }}>📹</div>
             <div style={{ marginBottom: '8px', fontWeight: '500' }}>Camera Ready</div>
             <div style={{ fontSize: '14px', opacity: 0.7 }}>
               Click "Start Detection" to begin
