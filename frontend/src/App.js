@@ -5,8 +5,6 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('live');
   const [signs, setSigns] = useState([]);
   const [selectedSign, setSelectedSign] = useState(null);
-  const [detectionResult, setDetectionResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch available signs on component mount
   useEffect(() => {
@@ -30,30 +28,6 @@ const App = () => {
       setSelectedSign(data);
     } catch (error) {
       console.error('Error fetching sign info:', error);
-    }
-  };
-
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setIsLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const response = await fetch('http://localhost:8000/detect-sign?annotated=true', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      const data = await response.json();
-      setDetectionResult(data);
-    } catch (error) {
-      console.error('Error detecting sign:', error);
-      setDetectionResult({ error: 'Failed to process image' });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -132,34 +106,6 @@ const App = () => {
             Live Detection
           </button>
           <button
-            onClick={() => setActiveTab('upload')}
-            style={{
-              padding: '16px 24px',
-              border: 'none',
-              backgroundColor: activeTab === 'upload' ? '#3498db' : 'transparent',
-              color: activeTab === 'upload' ? '#ffffff' : '#bdc3c7',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              borderBottom: activeTab === 'upload' ? '3px solid #3498db' : '3px solid transparent'
-            }}
-            onMouseOver={(e) => {
-              if (activeTab !== 'upload') {
-                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
-                e.target.style.color = '#ffffff';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (activeTab !== 'upload') {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#bdc3c7';
-              }
-            }}
-          >
-            Upload Image
-          </button>
-          <button
             onClick={() => setActiveTab('learn')}
             style={{
               padding: '16px 24px',
@@ -194,126 +140,6 @@ const App = () => {
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
         {activeTab === 'live' && (
           <LiveSignDetection />
-        )}
-
-        {activeTab === 'upload' && (
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '30px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }}>
-            <h2 style={{ margin: '0 0 20px 0', color: '#333' }}>
-              Upload Image for Detection
-            </h2>
-            
-            <div style={{ marginBottom: '20px' }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                style={{
-                  padding: '10px',
-                  border: '2px dashed #ddd',
-                  borderRadius: '4px',
-                  width: '100%',
-                  fontSize: '16px'
-                }}
-              />
-            </div>
-
-            {isLoading && (
-              <div style={{
-                textAlign: 'center',
-                padding: '40px',
-                color: '#666'
-              }}>
-                Processing image...
-              </div>
-            )}
-
-            {detectionResult && !isLoading && (
-              <div>
-                <h3 style={{ color: '#333', marginBottom: '15px' }}>
-                  Detection Results
-                </h3>
-                
-                {detectionResult.error ? (
-                  <div style={{
-                    backgroundColor: '#ffebee',
-                    color: '#c62828',
-                    padding: '15px',
-                    borderRadius: '4px',
-                    border: '1px solid #ef5350'
-                  }}>
-                    {detectionResult.error}
-                  </div>
-                ) : (
-                  <div>
-                    <div style={{
-                      backgroundColor: detectionResult.detected ? '#e8f5e8' : '#fff3e0',
-                      border: `2px solid ${detectionResult.detected ? '#4CAF50' : '#FF9800'}`,
-                      borderRadius: '8px',
-                      padding: '20px',
-                      marginBottom: '20px'
-                    }}>
-                      <h4 style={{ margin: '0 0 10px 0' }}>
-                        {detectionResult.detected ? 'Hands Detected!' : 'No Hands Detected'}
-                      </h4>
-                      <p style={{ margin: '0' }}>
-                        {detectionResult.message}
-                      </p>
-                      
-                      {detectionResult.detected_letters && detectionResult.detected_letters.length > 0 && (
-                        <div style={{ marginTop: '15px' }}>
-                          <h5 style={{ margin: '0 0 10px 0' }}>Recognized Signs:</h5>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                            {detectionResult.detected_letters.map((sign, index) => (
-                              <div
-                                key={index}
-                                style={{
-                                  backgroundColor: 'white',
-                                  border: '1px solid #ddd',
-                                  borderRadius: '6px',
-                                  padding: '10px 15px',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'center'
-                                }}
-                              >
-                                <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
-                                  {sign.letter}
-                                </div>
-                                <div style={{ fontSize: '12px', color: '#666' }}>
-                                  {(sign.confidence * 100).toFixed(0)}%
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {detectionResult.annotated_image && (
-                      <div>
-                        <h4>Annotated Image:</h4>
-                        <img
-                          src={detectionResult.annotated_image}
-                          alt="Annotated detection"
-                          style={{
-                            maxWidth: '100%',
-                            height: 'auto',
-                            borderRadius: '8px',
-                            border: '1px solid #ddd'
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
         )}
 
         {activeTab === 'learn' && (
