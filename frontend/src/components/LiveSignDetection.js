@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Reveal from './Reveal';
 
 // Sign analysis is now handled by the backend
 
@@ -199,7 +200,7 @@ const LiveSignDetection = () => {
   }, [stopDetection]);
 
   return (
-    <section className="card">
+    <Reveal as="section" className="card">
       <h2 className="section-title">Live Sign Detection</h2>
       <p className="section-subtitle">
         Turn on your camera and we'll read your hand signs as you make them.
@@ -292,33 +293,33 @@ const LiveSignDetection = () => {
       <div className="mt-40">
         <h3 className="section-title">Tips for Best Results</h3>
         <div className="tips-grid">
-          <div className="tip">
+          <Reveal className="tip">
             <div className="tip__title">Good Lighting</div>
             <p className="tip__text">
               Keep your hand well-lit and visible. Avoid shadows and harsh light.
             </p>
-          </div>
-          <div className="tip">
+          </Reveal>
+          <Reveal className="tip" delay={90}>
             <div className="tip__title">Clear Position</div>
             <p className="tip__text">
               Hold your hand clearly in front of the camera and keep it steady.
             </p>
-          </div>
-          <div className="tip">
+          </Reveal>
+          <Reveal className="tip" delay={180}>
             <div className="tip__title">Steady Movement</div>
             <p className="tip__text">
               Hold each sign for a moment. Avoid quick movements while detecting.
             </p>
-          </div>
-          <div className="tip">
+          </Reveal>
+          <Reveal className="tip" delay={270}>
             <div className="tip__title">Clean Background</div>
             <p className="tip__text">
               Use a plain background and start with one hand for clearer results.
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
-    </section>
+    </Reveal>
   );
 };
 
