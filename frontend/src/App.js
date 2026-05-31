@@ -1,10 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import LiveSignDetection from './components/LiveSignDetection';
+import Reveal from './components/Reveal';
 
 const NAV_ITEMS = [
   { id: 'home', label: 'Home' },
   { id: 'how', label: 'How this works' },
   { id: 'contact', label: 'Contact' },
+];
+
+const STEPS = [
+  {
+    title: 'Turn on your camera',
+    text: 'Open the Home page and press "Start Detection". Your browser will ask for permission to use the camera.',
+  },
+  {
+    title: 'Show your hand sign',
+    text: 'Hold your hand clearly in front of the camera in good lighting. The app captures the image many times each second.',
+  },
+  {
+    title: 'The computer reads the sign',
+    text: 'Each frame is sent to our detection service, which finds your hand and works out which letter you are showing.',
+  },
+  {
+    title: 'See the result instantly',
+    text: 'The recognised letter appears on screen with a confidence score, so you always know how sure the result is.',
+  },
+];
+
+const CONTACTS = [
+  { label: 'Email', value: <a href="mailto:hello@signlanguage.app">hello@signlanguage.app</a> },
+  { label: 'Phone', value: '+1 (555) 123-4567' },
+  { label: 'Address', value: '123 Accessibility Way, Suite 100' },
 ];
 
 const App = () => {
@@ -58,162 +84,153 @@ const App = () => {
         </div>
       </nav>
 
-      <header className="header">
-        <div className="container">
-          <h1 className="header__title">Sign Language Recognition</h1>
-          <p className="header__subtitle">
-            See and learn sign language in real time — simple enough for everyone.
-          </p>
-        </div>
-      </header>
+      {page === 'home' ? (
+        <section className="hero">
+          <span className="blob blob--circle blob--1" aria-hidden="true" />
+          <span className="blob blob--2" aria-hidden="true" />
+          <span className="blob blob--circle blob--3" aria-hidden="true" />
+
+          <div className="hero__inner-text">
+            <Reveal className="hero__accent" />
+            <Reveal as="h1" className="hero__title" delay={80}>
+              Understand hand signs <em>as they happen.</em>
+            </Reveal>
+            <Reveal as="p" className="hero__text" delay={160}>
+              Point your camera at a hand and watch the letters appear instantly.
+              Clear, friendly, and built for people of every age.
+            </Reveal>
+            <Reveal className="hero__actions" delay={240}>
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => setActiveTab('live')}
+              >
+                Start Live Detection
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => setActiveTab('learn')}
+              >
+                Learn the Alphabet
+              </button>
+            </Reveal>
+          </div>
+        </section>
+      ) : (
+        <header className="header">
+          <div className="container">
+            <h1 className="header__title">Sign Language Recognition</h1>
+            <p className="header__subtitle">
+              See and learn sign language in real time — simple enough for everyone.
+            </p>
+          </div>
+        </header>
+      )}
 
       <main className="main">
-        <div className="container">
-          {page === 'home' && (
-            <>
-              <nav className="tabs" aria-label="Sections">
-                <button
-                  type="button"
-                  className={`tab ${activeTab === 'live' ? 'tab--active' : ''}`}
-                  aria-pressed={activeTab === 'live'}
-                  onClick={() => setActiveTab('live')}
-                >
-                  Live Detection
-                </button>
-                <button
-                  type="button"
-                  className={`tab ${activeTab === 'learn' ? 'tab--active' : ''}`}
-                  aria-pressed={activeTab === 'learn'}
-                  onClick={() => setActiveTab('learn')}
-                >
-                  Learn Signs
-                </button>
-              </nav>
+        {page === 'home' && (
+          <div className="home">
+            <Reveal as="nav" className="tabs" delay={60}>
+              <button
+                type="button"
+                className={`tab ${activeTab === 'live' ? 'tab--active' : ''}`}
+                aria-pressed={activeTab === 'live'}
+                onClick={() => setActiveTab('live')}
+              >
+                Live Detection
+              </button>
+              <button
+                type="button"
+                className={`tab ${activeTab === 'learn' ? 'tab--active' : ''}`}
+                aria-pressed={activeTab === 'learn'}
+                onClick={() => setActiveTab('learn')}
+              >
+                Learn Signs
+              </button>
+            </Reveal>
 
-              {activeTab === 'live' && <LiveSignDetection />}
+            {activeTab === 'live' && <LiveSignDetection />}
 
-              {activeTab === 'learn' && (
-                <section className="card">
-                  <h2 className="section-title">Learn the Alphabet</h2>
-                  <p className="section-subtitle">
-                    Tap any letter to see how to make the sign.
-                  </p>
+            {activeTab === 'learn' && (
+              <Reveal as="section" className="card">
+                <h2 className="section-title">Learn the Alphabet</h2>
+                <p className="section-subtitle">
+                  Tap any letter to see how to make the sign.
+                </p>
 
-                  <div className="letter-grid">
-                    {signs.map((sign) => (
-                      <button
-                        type="button"
-                        key={sign}
-                        className={`letter-btn ${
-                          selectedSign?.letter === sign ? 'letter-btn--active' : ''
-                        }`}
-                        aria-pressed={selectedSign?.letter === sign}
-                        onClick={() => fetchSignInfo(sign)}
-                      >
-                        {sign}
-                      </button>
-                    ))}
-                  </div>
+                <div className="letter-grid">
+                  {signs.map((sign) => (
+                    <button
+                      type="button"
+                      key={sign}
+                      className={`letter-btn ${
+                        selectedSign?.letter === sign ? 'letter-btn--active' : ''
+                      }`}
+                      aria-pressed={selectedSign?.letter === sign}
+                      onClick={() => fetchSignInfo(sign)}
+                    >
+                      {sign}
+                    </button>
+                  ))}
+                </div>
 
-                  {selectedSign && (
-                    <div className="detail-card">
-                      <div className="detail-card__letter">{selectedSign.letter}</div>
-                      <p className="detail-card__desc">{selectedSign.description}</p>
-                      <div className="detail-card__meta">
-                        Category: {selectedSign.category}
-                      </div>
+                {selectedSign && (
+                  <div className="detail-card">
+                    <div className="detail-card__letter">{selectedSign.letter}</div>
+                    <p className="detail-card__desc">{selectedSign.description}</p>
+                    <div className="detail-card__meta">
+                      Category: {selectedSign.category}
                     </div>
-                  )}
-                </section>
-              )}
-            </>
-          )}
+                  </div>
+                )}
+              </Reveal>
+            )}
+          </div>
+        )}
 
-          {page === 'how' && (
-            <section className="card">
+        {page === 'how' && (
+          <div className="container">
+            <Reveal as="section" className="card">
               <h2 className="section-title">How This Works</h2>
               <p className="section-subtitle">
                 Detecting signs takes just a few simple steps.
               </p>
 
               <div className="steps">
-                <div className="step">
-                  <div className="step__num">1</div>
-                  <div>
-                    <div className="step__title">Turn on your camera</div>
-                    <p className="step__text">
-                      Open the Home page and press "Start Detection". Your browser
-                      will ask for permission to use the camera.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="step">
-                  <div className="step__num">2</div>
-                  <div>
-                    <div className="step__title">Show your hand sign</div>
-                    <p className="step__text">
-                      Hold your hand clearly in front of the camera in good lighting.
-                      The app captures the image many times each second.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="step">
-                  <div className="step__num">3</div>
-                  <div>
-                    <div className="step__title">The computer reads the sign</div>
-                    <p className="step__text">
-                      Each frame is sent to our detection service, which finds your
-                      hand and works out which letter you are showing.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="step">
-                  <div className="step__num">4</div>
-                  <div>
-                    <div className="step__title">See the result instantly</div>
-                    <p className="step__text">
-                      The recognised letter appears on screen with a confidence
-                      score, so you always know how sure the result is.
-                    </p>
-                  </div>
-                </div>
+                {STEPS.map((step, index) => (
+                  <Reveal className="step" key={step.title} delay={index * 90}>
+                    <div className="step__num">{index + 1}</div>
+                    <div>
+                      <div className="step__title">{step.title}</div>
+                      <p className="step__text">{step.text}</p>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
-            </section>
-          )}
+            </Reveal>
+          </div>
+        )}
 
-          {page === 'contact' && (
-            <section className="card">
+        {page === 'contact' && (
+          <div className="container">
+            <Reveal as="section" className="card">
               <h2 className="section-title">Contact</h2>
               <p className="section-subtitle">
                 Have a question or some feedback? We would love to hear from you.
               </p>
 
               <div className="contact-list">
-                <div className="contact-item">
-                  <div className="contact-item__label">Email</div>
-                  <div className="contact-item__value">
-                    <a href="mailto:hello@signlanguage.app">hello@signlanguage.app</a>
-                  </div>
-                </div>
-
-                <div className="contact-item">
-                  <div className="contact-item__label">Phone</div>
-                  <div className="contact-item__value">+1 (555) 123-4567</div>
-                </div>
-
-                <div className="contact-item">
-                  <div className="contact-item__label">Address</div>
-                  <div className="contact-item__value">
-                    123 Accessibility Way, Suite 100
-                  </div>
-                </div>
+                {CONTACTS.map((item, index) => (
+                  <Reveal className="contact-item" key={item.label} delay={index * 90}>
+                    <div className="contact-item__label">{item.label}</div>
+                    <div className="contact-item__value">{item.value}</div>
+                  </Reveal>
+                ))}
               </div>
-            </section>
-          )}
-        </div>
+            </Reveal>
+          </div>
+        )}
       </main>
 
       <footer className="footer">
