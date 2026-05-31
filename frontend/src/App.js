@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import LiveSignDetection from './components/LiveSignDetection';
 
+const NAV_ITEMS = [
+  { id: 'home', label: 'Home' },
+  { id: 'how', label: 'How this works' },
+  { id: 'contact', label: 'Contact' },
+];
+
 const App = () => {
+  const [page, setPage] = useState('home');
   const [activeTab, setActiveTab] = useState('live');
   const [signs, setSigns] = useState([]);
   const [selectedSign, setSelectedSign] = useState(null);
 
-  // Fetch available signs on component mount
   useEffect(() => {
     fetchSigns();
   }, []);
@@ -32,212 +38,188 @@ const App = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#1a1a2e',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      color: '#ffffff'
-    }}>
-      {/* Header */}
-      <header style={{
-        backgroundColor: '#16213e',
-        color: '#ffffff',
-        padding: '40px 0',
-        textAlign: 'center',
-        borderBottom: '1px solid #2c3e50'
-      }}>
-        <h1 style={{ 
-          margin: '0', 
-          fontSize: '2.5rem',
-          fontWeight: '600',
-          color: '#ffffff',
-          letterSpacing: '-0.5px'
-        }}>
-          AI Sign Language Recognition
-        </h1>
-        <p style={{ 
-          margin: '10px 0 0 0', 
-          fontSize: '1.1rem', 
-          color: '#bdc3c7',
-          fontWeight: '400'
-        }}>
-          Real-time finger detection and sign language analysis
-        </p>
-      </header>
-
-      {/* Navigation */}
-      <nav style={{
-        backgroundColor: '#16213e',
-        padding: '0',
-        borderBottom: '1px solid #2c3e50'
-      }}>
-        <div style={{
-          display: 'flex',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 20px'
-        }}>
-          <button
-            onClick={() => setActiveTab('live')}
-            style={{
-              padding: '16px 24px',
-              border: 'none',
-              backgroundColor: activeTab === 'live' ? '#3498db' : 'transparent',
-              color: activeTab === 'live' ? '#ffffff' : '#bdc3c7',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              borderBottom: activeTab === 'live' ? '3px solid #3498db' : '3px solid transparent'
-            }}
-            onMouseOver={(e) => {
-              if (activeTab !== 'live') {
-                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
-                e.target.style.color = '#ffffff';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (activeTab !== 'live') {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#bdc3c7';
-              }
-            }}
-          >
-            Live Detection
-          </button>
-          <button
-            onClick={() => setActiveTab('learn')}
-            style={{
-              padding: '16px 24px',
-              border: 'none',
-              backgroundColor: activeTab === 'learn' ? '#3498db' : 'transparent',
-              color: activeTab === 'learn' ? '#ffffff' : '#bdc3c7',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              borderBottom: activeTab === 'learn' ? '3px solid #3498db' : '3px solid transparent'
-            }}
-            onMouseOver={(e) => {
-              if (activeTab !== 'learn') {
-                e.target.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
-                e.target.style.color = '#ffffff';
-              }
-            }}
-            onMouseOut={(e) => {
-              if (activeTab !== 'learn') {
-                e.target.style.backgroundColor = 'transparent';
-                e.target.style.color = '#bdc3c7';
-              }
-            }}
-          >
-            Learn Signs
-          </button>
+    <div className="app">
+      <nav className="navbar" aria-label="Main navigation">
+        <div className="navbar__inner">
+          <span className="navbar__brand">Sign Language Recognition</span>
+          <div className="navbar__links">
+            {NAV_ITEMS.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                className={`navlink ${page === item.id ? 'navlink--active' : ''}`}
+                aria-current={page === item.id ? 'page' : undefined}
+                onClick={() => setPage(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-        {activeTab === 'live' && (
-          <LiveSignDetection />
-        )}
+      <header className="header">
+        <div className="container">
+          <h1 className="header__title">Sign Language Recognition</h1>
+          <p className="header__subtitle">
+            See and learn sign language in real time — simple enough for everyone.
+          </p>
+        </div>
+      </header>
 
-        {activeTab === 'learn' && (
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '8px',
-            padding: '30px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }}>
-            <h2 style={{ margin: '0 0 20px 0', color: '#333' }}>
-              Learn Sign Language
-            </h2>
-            
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gap: '15px',
-              marginBottom: '30px'
-            }}>
-              {signs.map(sign => (
+      <main className="main">
+        <div className="container">
+          {page === 'home' && (
+            <>
+              <nav className="tabs" aria-label="Sections">
                 <button
-                  key={sign}
-                  onClick={() => fetchSignInfo(sign)}
-                  style={{
-                    padding: '20px',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    backgroundColor: selectedSign?.letter === sign ? '#e3f2fd' : 'white',
-                    cursor: 'pointer',
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    color: '#333',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseOver={(e) => {
-                    if (selectedSign?.letter !== sign) {
-                      e.target.style.backgroundColor = '#f5f5f5';
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (selectedSign?.letter !== sign) {
-                      e.target.style.backgroundColor = 'white';
-                    }
-                  }}
+                  type="button"
+                  className={`tab ${activeTab === 'live' ? 'tab--active' : ''}`}
+                  aria-pressed={activeTab === 'live'}
+                  onClick={() => setActiveTab('live')}
                 >
-                  {sign}
+                  Live Detection
                 </button>
-              ))}
-            </div>
+                <button
+                  type="button"
+                  className={`tab ${activeTab === 'learn' ? 'tab--active' : ''}`}
+                  aria-pressed={activeTab === 'learn'}
+                  onClick={() => setActiveTab('learn')}
+                >
+                  Learn Signs
+                </button>
+              </nav>
 
-            {selectedSign && (
-              <div style={{
-                backgroundColor: '#f8f9fa',
-                border: '1px solid #dee2e6',
-                borderRadius: '8px',
-                padding: '25px',
-                textAlign: 'center'
-              }}>
-                <div style={{
-                  fontSize: '72px',
-                  fontWeight: 'bold',
-                  color: '#2196F3',
-                  marginBottom: '15px'
-                }}>
-                  {selectedSign.letter}
+              {activeTab === 'live' && <LiveSignDetection />}
+
+              {activeTab === 'learn' && (
+                <section className="card">
+                  <h2 className="section-title">Learn the Alphabet</h2>
+                  <p className="section-subtitle">
+                    Tap any letter to see how to make the sign.
+                  </p>
+
+                  <div className="letter-grid">
+                    {signs.map((sign) => (
+                      <button
+                        type="button"
+                        key={sign}
+                        className={`letter-btn ${
+                          selectedSign?.letter === sign ? 'letter-btn--active' : ''
+                        }`}
+                        aria-pressed={selectedSign?.letter === sign}
+                        onClick={() => fetchSignInfo(sign)}
+                      >
+                        {sign}
+                      </button>
+                    ))}
+                  </div>
+
+                  {selectedSign && (
+                    <div className="detail-card">
+                      <div className="detail-card__letter">{selectedSign.letter}</div>
+                      <p className="detail-card__desc">{selectedSign.description}</p>
+                      <div className="detail-card__meta">
+                        Category: {selectedSign.category}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              )}
+            </>
+          )}
+
+          {page === 'how' && (
+            <section className="card">
+              <h2 className="section-title">How This Works</h2>
+              <p className="section-subtitle">
+                Detecting signs takes just a few simple steps.
+              </p>
+
+              <div className="steps">
+                <div className="step">
+                  <div className="step__num">1</div>
+                  <div>
+                    <div className="step__title">Turn on your camera</div>
+                    <p className="step__text">
+                      Open the Home page and press "Start Detection". Your browser
+                      will ask for permission to use the camera.
+                    </p>
+                  </div>
                 </div>
-                <p style={{
-                  fontSize: '18px',
-                  color: '#495057',
-                  margin: '0 0 10px 0',
-                  lineHeight: '1.5'
-                }}>
-                  {selectedSign.description}
-                </p>
-                <div style={{
-                  fontSize: '14px',
-                  color: '#6c757d',
-                  marginTop: '15px'
-                }}>
-                  Category: {selectedSign.category}
+
+                <div className="step">
+                  <div className="step__num">2</div>
+                  <div>
+                    <div className="step__title">Show your hand sign</div>
+                    <p className="step__text">
+                      Hold your hand clearly in front of the camera in good lighting.
+                      The app captures the image many times each second.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="step">
+                  <div className="step__num">3</div>
+                  <div>
+                    <div className="step__title">The computer reads the sign</div>
+                    <p className="step__text">
+                      Each frame is sent to our detection service, which finds your
+                      hand and works out which letter you are showing.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="step">
+                  <div className="step__num">4</div>
+                  <div>
+                    <div className="step__title">See the result instantly</div>
+                    <p className="step__text">
+                      The recognised letter appears on screen with a confidence
+                      score, so you always know how sure the result is.
+                    </p>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-        )}
+            </section>
+          )}
+
+          {page === 'contact' && (
+            <section className="card">
+              <h2 className="section-title">Contact</h2>
+              <p className="section-subtitle">
+                Have a question or some feedback? We would love to hear from you.
+              </p>
+
+              <div className="contact-list">
+                <div className="contact-item">
+                  <div className="contact-item__label">Email</div>
+                  <div className="contact-item__value">
+                    <a href="mailto:hello@signlanguage.app">hello@signlanguage.app</a>
+                  </div>
+                </div>
+
+                <div className="contact-item">
+                  <div className="contact-item__label">Phone</div>
+                  <div className="contact-item__value">+1 (555) 123-4567</div>
+                </div>
+
+                <div className="contact-item">
+                  <div className="contact-item__label">Address</div>
+                  <div className="contact-item__value">
+                    123 Accessibility Way, Suite 100
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
       </main>
 
-      {/* Footer */}
-      <footer style={{
-        backgroundColor: '#333',
-        color: 'white',
-        textAlign: 'center',
-        padding: '20px 0',
-        marginTop: '40px'
-      }}>
-        <p style={{ margin: '0' }}>
-          AI Sign Language Recognition System - Built with FastAPI and React
-        </p>
+      <footer className="footer">
+        <div className="container">
+          Sign Language Recognition — made to be friendly and easy to use.
+        </div>
       </footer>
     </div>
   );
