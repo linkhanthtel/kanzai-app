@@ -28,9 +28,9 @@ const STEPS = [
 ];
 
 const CONTACTS = [
-  { label: 'Email', value: <a href="mailto:hello@signlanguage.app">hello@signlanguage.app</a> },
-  { label: 'Phone', value: '+1 (555) 123-4567' },
-  { label: 'Address', value: '123 Accessibility Way, Suite 100' },
+  { label: 'Email', value: <a href="mailto:linkhanthtel@icloud.com">linkhanthtel@icloud.com</a> },
+  { label: 'Phone', value: '+65 8762 5331' },
+  { label: 'Address', value: 'Braddell' },
 ];
 
 const App = () => {
@@ -67,7 +67,7 @@ const App = () => {
     <div className="app">
       <nav className="navbar" aria-label="Main navigation">
         <div className="navbar__inner">
-          <span className="navbar__brand">Sign Language Recognition</span>
+          <span className="navbar__brand">Kanzai App</span>
           <div className="navbar__links">
             {NAV_ITEMS.map((item) => (
               <button
@@ -120,7 +120,7 @@ const App = () => {
       ) : (
         <header className="header">
           <div className="container">
-            <h1 className="header__title">Sign Language Recognition</h1>
+            <h1 className="header__title">Kanzai App</h1>
             <p className="header__subtitle">
               See and learn sign language in real time — simple enough for everyone.
             </p>
@@ -235,7 +235,7 @@ const App = () => {
 
       <footer className="footer">
         <div className="container">
-          Sign Language Recognition — made to be friendly and easy to use.
+          Kanzai App | 2026 All rights reserved
         </div>
       </footer>
     </div>
