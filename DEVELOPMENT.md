@@ -31,15 +31,19 @@ npm start
 ```
 kanzai-app/
 ├── backend/                 # FastAPI backend
-│   ├── main.py             # Main FastAPI application
+│   ├── main.py             # Main FastAPI application (REST + WebSocket)
+│   ├── detection_models.py # Hand detection methods
+│   ├── sign_analysis.py    # Sign/letter analysis logic
 │   └── requirements.txt    # Python dependencies
 ├── frontend/               # React frontend
 │   ├── public/
 │   │   └── index.html      # HTML template
 │   ├── src/
 │   │   ├── components/
-│   │   │   └── LiveSignDetection.js
+│   │   │   ├── LiveSignDetection.js
+│   │   │   └── Reveal.js   # Scroll-reveal animation helper
 │   │   ├── App.js          # Main React component
+│   │   ├── index.css       # Global styles / theme
 │   │   └── index.js        # React entry point
 │   └── package.json        # Node.js dependencies
 ├── start_backend.sh        # Backend startup script

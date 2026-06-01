@@ -15,17 +15,23 @@ A full-stack application for real-time sign language detection and learning, bui
 ```
 kanzai-app/
 ├── backend/
-│   ├── main.py              # FastAPI server
+│   ├── main.py              # FastAPI server (REST + WebSocket)
+│   ├── detection_models.py  # Hand detection methods
+│   ├── sign_analysis.py     # Sign/letter analysis logic
 │   └── requirements.txt     # Python dependencies
 ├── frontend/
 │   ├── public/
 │   │   └── index.html       # HTML template
 │   ├── src/
 │   │   ├── components/
-│   │   │   └── LiveSignDetection.js
+│   │   │   ├── LiveSignDetection.js
+│   │   │   └── Reveal.js     # Scroll-reveal animation helper
 │   │   ├── App.js           # Main React component
+│   │   ├── index.css        # Global styles / theme
 │   │   └── index.js         # React entry point
 │   └── package.json         # Node.js dependencies
+├── start_backend.sh
+├── start_frontend.sh
 └── README.md
 ```
 
@@ -33,6 +39,7 @@ kanzai-app/
 
 1. **Install Python dependencies:**
    ```bash
+   cd backend
    pip install -r requirements.txt
    ```
 
@@ -47,6 +54,7 @@ kanzai-app/
 
 1. **Install Node.js dependencies:**
    ```bash
+   cd frontend
    npm install
    ```
 
@@ -84,8 +92,7 @@ kanzai-app/
 1. Start both the backend and frontend servers
 2. Open the React app in your browser
 3. Use the "Live Detection" tab for real-time sign language detection
-4. Use the "Upload Image" tab to analyze uploaded images
-5. Use the "Learn Signs" tab to explore sign language alphabet
+4. Use the "Learn Signs" tab to explore the sign language alphabet
 
 ## Requirements
 
